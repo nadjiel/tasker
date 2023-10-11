@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 @RestController
 @RequestMapping("/users")
@@ -25,6 +26,12 @@ public class UserController {
         .body("User already exists!");
     }
 
+    String password = BCrypt
+      .withDefaults()
+      .hashToString(12, model.getPassword().toCharArray());
+
+    model.setPassword(password);
+    
     UserModel newUser = repository.save(model);
 
     return ResponseEntity
