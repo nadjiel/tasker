@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/users")
@@ -14,10 +16,20 @@ public class UserController {
   private IUserRepository repository;
   
   @PostMapping("/")
-  public UserModel create(@RequestBody UserModel userModel) {
-    var user = this.repository.save(userModel);
+  public ResponseEntity create(@RequestBody UserModel model) {
+    UserModel user = repository.findByUsername(model.getUsername());
 
-    return user;
+    if(user != null) {
+      return ResponseEntity
+        .status(HttpStatus.BAD_REQUEST)
+        .body("User already exists!");
+    }
+
+    UserModel newUser = repository.save(model);
+
+    return ResponseEntity
+      .status(HttpStatus.CREATED)
+      .body(newUser);
   }
 
 }
