@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +69,26 @@ public class TaskController {
 
     // Returning result
     return tasks;
+  }
+
+  // TODO: handle empty or incomplete request bodies
+  @PutMapping("/{id}")
+  public TaskModel update(
+    @RequestBody TaskModel model,
+    @PathVariable UUID id,
+    HttpServletRequest request
+  ) {
+    // Getting owner id from request attributes
+    UUID owner = (UUID) request.getAttribute("user");
+
+    // Setting task id from the path variable
+    model.setId(id);
+
+    // Setting the owner id in the model
+    model.setOwner(owner);
+
+    // Returning result
+    return repository.save(model);
   }
 
 }
