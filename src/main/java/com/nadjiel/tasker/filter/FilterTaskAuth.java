@@ -30,7 +30,7 @@ public class FilterTaskAuth extends OncePerRequestFilter {
     HttpServletResponse response,
     FilterChain filterChain
   ) throws ServletException, IOException {
-    var servletPath = request.getServletPath();
+    String servletPath = request.getServletPath();
     // Verifying route
     if(!servletPath.equals("/tasks/")) {
       filterChain.doFilter(request, response);
@@ -68,6 +68,9 @@ public class FilterTaskAuth extends OncePerRequestFilter {
 
       return;
     }
+
+    // Setting the user id on the request attributes
+    request.setAttribute("user", user.getId());
 
     // Passing the flow
     filterChain.doFilter(request, response);
