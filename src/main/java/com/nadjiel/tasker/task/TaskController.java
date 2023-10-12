@@ -2,11 +2,13 @@ package com.nadjiel.tasker.task;
 
 import java.util.UUID;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +55,18 @@ public class TaskController {
     return ResponseEntity
       .status(HttpStatus.CREATED)
       .body(task);
+  }
+
+  @GetMapping("/")
+  public List<TaskModel> list(HttpServletRequest request) {
+    // Getting owner id from request attributes
+    UUID owner = (UUID) request.getAttribute("user");
+
+    // Getting task list from the repository
+    List<TaskModel> tasks = repository.findByOwner(owner);
+
+    // Returning result
+    return tasks;
   }
 
 }
