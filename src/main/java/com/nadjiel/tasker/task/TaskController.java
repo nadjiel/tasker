@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
+import com.nadjiel.tasker.utils.Utils;
 
 @RestController
 @RequestMapping("/tasks")
@@ -71,24 +72,23 @@ public class TaskController {
     return tasks;
   }
 
-  // TODO: handle empty or incomplete request bodies
+  // TODO: Prevent task id changing
+  // TODO: Prevent owner id changing
+  // TODO: Prevent createdAt changing
   @PutMapping("/{id}")
   public TaskModel update(
     @RequestBody TaskModel model,
     @PathVariable UUID id,
     HttpServletRequest request
   ) {
-    // Getting owner id from request attributes
-    UUID owner = (UUID) request.getAttribute("user");
+    // Getting the task to be updated with the repository
+    TaskModel task = repository.findById(id).orElse(null);
 
-    // Setting task id from the path variable
-    model.setId(id);
+    // Setting only the received properties to the task model
+    Utils.copyNonNullProperties(model, task);
 
-    // Setting the owner id in the model
-    model.setOwner(owner);
-
-    // Returning result
-    return repository.save(model);
+    // Saving the updated model and returning it
+    return repository.save(task);
   }
 
 }
