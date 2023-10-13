@@ -72,9 +72,6 @@ public class TaskController {
     return tasks;
   }
 
-  // TODO: Prevent task id changing
-  // TODO: Prevent owner id changing
-  // TODO: Prevent createdAt changing
   @PutMapping("/{id}")
   public ResponseEntity update(
     @RequestBody TaskModel model,

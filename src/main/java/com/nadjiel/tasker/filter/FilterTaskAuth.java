@@ -22,8 +22,6 @@ public class FilterTaskAuth extends OncePerRequestFilter {
   @Autowired
   private IUserRepository userRepository;
 
-  // TODO: handle no Athentication header requests
-  // TODO: handle no password requests
   @Override
   protected void doFilterInternal(
     HttpServletRequest request,
