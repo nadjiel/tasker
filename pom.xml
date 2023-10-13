@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.nadjiel</groupId>
 	<artifactId>tasker</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>tasker</name>
 	<description>Task list manager</description>
 	<properties>
