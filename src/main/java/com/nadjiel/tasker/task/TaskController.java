@@ -76,19 +76,41 @@ public class TaskController {
   // TODO: Prevent owner id changing
   // TODO: Prevent createdAt changing
   @PutMapping("/{id}")
-  public TaskModel update(
+  public ResponseEntity update(
     @RequestBody TaskModel model,
     @PathVariable UUID id,
     HttpServletRequest request
   ) {
+    // Getting owner id from request attributes
+    UUID owner = (UUID) request.getAttribute("user");
+
     // Getting the task to be updated with the repository
     TaskModel task = repository.findById(id).orElse(null);
+
+    // Verifying if task exists
+    if(task == null) {
+      return ResponseEntity
+        .status(HttpStatus.NOT_FOUND)
+        .body("Task not found!");
+    }
+
+    // Verifying if the requester is the task owner
+    if(!task.getOwner().equals(owner)) {
+      return ResponseEntity
+        .status(HttpStatus.UNAUTHORIZED)
+        .body("Unauthorized to update this task!");
+    }
 
     // Setting only the received properties to the task model
     Utils.copyNonNullProperties(model, task);
 
-    // Saving the updated model and returning it
-    return repository.save(task);
+    // Saving the updated model
+    task = repository.save(task);
+
+    // Returning the result
+    return ResponseEntity
+      .ok()
+      .body(task);
   }
 
 }
